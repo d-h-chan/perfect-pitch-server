@@ -3,6 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
+const scoresRouter = require('./scores/scores-router')
 const { NODE_ENV } = require('./config')
 
 const app = express()
@@ -14,6 +15,8 @@ const morganOption = (NODE_ENV === 'production')
 app.use(morgan(morganOption))
 app.use(helmet())
 app.use(cors())
+
+app.use('/api/scores', scoresRouter)
 
 app.get('/', (req, res) => {
   res.send('Hello Perfect-Pitch!')
