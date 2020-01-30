@@ -44,7 +44,7 @@ describe(`scores service object`, function () {
 
   after(() => db.destroy())
 
-  describe(`Get /scores`, () => {
+  describe(`Get /api/scores`, () => {
     context(`Given there are no scores`, () => {
 
       beforeEach('cleanup', () => helpers.cleanTables(db))
@@ -68,6 +68,36 @@ describe(`scores service object`, function () {
         return supertest(app)
           .get('/api/scores')
           .expect(200, testScores)
+      })
+    })
+  })
+
+  describe(`Get /api/scores/:id`, () => {
+    context(`Given there are no scores`, () => {
+
+      beforeEach('cleanup', () => helpers.cleanTables(db))
+
+      it(`responds with 404`, () => {
+        const scoreId = 123456
+        return supertest(app)
+          .get(`/api/scores/${scoreId}`)
+          .expect(404, { error: `Score doesn't exist` })
+      })
+    })
+
+    context(`Given there are scores`, () => {
+
+      beforeEach(() => {
+        return db
+          .into('scores')
+          .insert(testScores)
+      })
+
+      it(`responds with 200 and the score`, () => {
+        const scoreId = 1
+        return supertest(app)
+          .get(`/api/scores/${scoreId}`)
+          .expect(200, testScores[0])
       })
     })
   })

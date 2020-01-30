@@ -11,7 +11,11 @@ const ScoresService = {
         'scr.difficulty',
       )
   },
-
+  getById(db, id) {
+    return ScoresService.getAllScores(db)
+      .where('scr.id', id)
+      .first()
+  },
   serializeScores(scores) {
     return scores.map(this.serializeScore)
   },
