@@ -13,6 +13,29 @@ scoresRouter
       })
       .catch(next)
   })
+  .post(jsonBodyParser, (req, res, next) => {
+    const { user_name, score, difficulty } = req.body
+    const newScore = { user_name, score, difficulty }
+
+    for (const [key, value] of Object.entries(newScore))
+      if (value == null)
+        return res.status(400).json({
+          error: `Missing '${key}' in request body`
+        })
+
+        //
+    ScoresService.insertScore(
+      req.app.get('db'),
+      newScore
+    )
+      .then(score => {
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl, `/${score.id}`))
+          .json(ScoresService.serializeScore(score))
+      })
+      .catch(next)
+    })
 
 scoresRouter
   .route('/:score_id')

@@ -101,4 +101,41 @@ describe(`scores service object`, function () {
       })
     })
   })
+
+  describe(`POST /api/scores`, () => {
+
+    beforeEach('cleanup', () => helpers.cleanTables(db))
+
+    it(`creates a score, responding with 201 and the new score`, function () {
+      this.retries(3)
+      const newScore = {
+        user_name: 'test user post',
+        score: 9,
+        difficulty: "medium"
+      }
+      return supertest(app)
+        .post('/api/scores')
+        .send(newScore)
+        .expect(201)
+        .expect(res => {
+          expect(res.body).to.have.property('id')
+          expect(res.body.user_name).to.eql(newScore.user_name)
+          expect(res.body.score).to.eql(newScore.score)
+          expect(res.body.difficulty).to.eql(newScore.difficulty)
+          expect(res.headers.location).to.eql(`/api/scores/${res.body.id}`)
+        })
+        .expect(res =>
+          db
+            .from('scores')
+            .select('*')
+            .where({ id: res.body.id })
+            .first()
+            .then(row => {
+              expect(row.user_name).to.eql(newScore.user_name)
+              expect(row.score).to.eql(newScore.score)
+              expect(row.difficulty).to.eql(newScore.difficulty)
+            })
+        )
+    })
+  })
 })

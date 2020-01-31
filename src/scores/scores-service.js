@@ -11,13 +11,26 @@ const ScoresService = {
         'scr.difficulty',
       )
   },
+
   getById(db, id) {
     return ScoresService.getAllScores(db)
       .where('scr.id', id)
       .first()
   },
+
   serializeScores(scores) {
     return scores.map(this.serializeScore)
+  },
+
+  insertScore(db, newScore) {
+    return db
+      .insert(newScore)
+      .into('scores')
+      .returning('*')    //what is this?
+      .then(([score]) => score)
+      .then(score =>
+        ScoresService.getById(db, score.id)
+      )
   },
 
   serializeScore(score) {
