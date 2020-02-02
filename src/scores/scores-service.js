@@ -42,7 +42,7 @@ const ScoresService = {
     const scoreData = scoreTree.grow([ score ]).getData()[0]
     return {
       id: scoreData.id,
-      user_name: scoreData.user_name,
+      user: scoreData.user_name,
       score: scoreData.score,
       difficulty: scoreData.difficulty,
     }
