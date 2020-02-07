@@ -1,6 +1,7 @@
 const knex = require('knex')
 const helpers = require('./test-helpers')
 const app = require('../src/app')
+const {serializeScore} = require('../src/scores/scores-service')
 
 describe(`scores service object`, function () {
 
@@ -26,6 +27,9 @@ describe(`scores service object`, function () {
       difficulty: "hard"
     },
   ]
+
+  let serializedTestScores = testScores.map(serializeScore);
+
   before(() => {
     db = knex({
       client: 'pg',
@@ -67,7 +71,7 @@ describe(`scores service object`, function () {
       it(`responds with 200 and all of the scores`, () => {
         return supertest(app)
           .get('/api/scores')
-          .expect(200, testScores)
+          .expect(200, serializedTestScores)
       })
     })
   })
@@ -97,7 +101,7 @@ describe(`scores service object`, function () {
         const scoreId = 1
         return supertest(app)
           .get(`/api/scores/${scoreId}`)
-          .expect(200, testScores[0])
+          .expect(200, serializedTestScores[0])
       })
     })
   })
@@ -119,7 +123,7 @@ describe(`scores service object`, function () {
         .expect(201)
         .expect(res => {
           expect(res.body).to.have.property('id')
-          expect(res.body.user_name).to.eql(newScore.user_name)
+          expect(res.body.user).to.eql(newScore.user_name)
           expect(res.body.score).to.eql(newScore.score)
           expect(res.body.difficulty).to.eql(newScore.difficulty)
           expect(res.headers.location).to.eql(`/api/scores/${res.body.id}`)

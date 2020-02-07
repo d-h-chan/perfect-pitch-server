@@ -3,18 +3,19 @@ const Treeize = require('treeize')
 const ScoresService = {
   getAllScores(db) {
     return db
-      .from('scores AS scr')
+      .from('scores')
       .select(
-        'scr.id',
-        'scr.user_name',
-        'scr.score',
-        'scr.difficulty',
+        'id',
+        'user_name',
+        'score',
+        'difficulty',
       )
+      .orderBy('score', 'desc')
   },
 
   getById(db, id) {
     return ScoresService.getAllScores(db)
-      .where('scr.id', id)
+      .where('id', id)
       .first()
   },
 
