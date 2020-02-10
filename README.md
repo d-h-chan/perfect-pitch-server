@@ -1,6 +1,9 @@
-# Express Boilerplate!
+## Api Endpoints:
+GET /api/scores: return list of all scores in db
+POST /api/scopres: insert a new score into the database 
 
-This is a boilerplate project used for starting new projects!
+GET /api/scores/:scoreid: return a specific score
+
 
 ## Set up
 
